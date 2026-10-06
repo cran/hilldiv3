@@ -1,0 +1,44 @@
+Package: hilldiv3
+Title: Integral Analysis of Diversity Based on Hill Numbers
+Version: 3.0.0
+Authors@R: 
+    person("Antton", "Alberdi", , "antton.alberdi@sund.ku.dk", role = c("aut", "cre"),
+           comment = c(ORCID = "0000-0002-2875-6446"))
+Description: Measures and compares the diversity of biological communities
+    (e.g. tables of operational taxonomic units (OTUs), amplicon sequence
+    variants (ASVs) or metagenome-assembled genomes (MAGs)) based on Hill
+    numbers, in a unified framework for neutral, phylogenetic and functional
+    diversity measurement, diversity partitioning, (dis)similarity
+    measurement, diversity profiles, evenness and redundancy. The
+    statistical framework encompasses richness, Shannon and Simpson
+    diversity, Faith's phylogenetic diversity (PD), Rao's quadratic entropy
+    and Sorensen- and UniFrac-type dissimilarities, all grounded in a single
+    Hill-number framework. Methods are described in Jost (2007)
+    <doi:10.1890/06-1736.1>, Chao et al. (2010)
+    <doi:10.1098/rstb.2010.0272>, Chiu et al. (2014) <doi:10.1890/12-0960.1>
+    and reviewed in Alberdi & Gilbert (2019) <doi:10.1111/1755-0998.13014>.
+    Optional import adapters interoperate with the Bioconductor packages
+    'phyloseq', 'SummarizedExperiment' and 'TreeSummarizedExperiment',
+    which are available from <https://bioconductor.org>.
+License: GPL-3
+Language: en-GB
+URL: https://github.com/alberdilab/hilldiv3,
+        https://alberdilab.github.io/hilldiv3/
+BugReports: https://github.com/alberdilab/hilldiv3/issues
+Depends: R (>= 4.1.0)
+Imports: ape, cli, grDevices, graphics, methods, rlang, stats, utils
+Suggests: cluster, furrr, future, ggplot2, knitr, patchwork, phyloseq,
+        progressr, rmarkdown, SummarizedExperiment, testthat (>=
+        3.0.0), tibble, TreeSummarizedExperiment, vegan
+VignetteBuilder: knitr
+Config/testthat/edition: 3
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 7.3.3
+NeedsCompilation: no
+Packaged: 2026-09-26 03:27:49 UTC; anttonalberdi
+Author: Antton Alberdi [aut, cre] (ORCID:
+    <https://orcid.org/0000-0002-2875-6446>)
+Maintainer: Antton Alberdi <antton.alberdi@sund.ku.dk>
+Repository: CRAN
+Date/Publication: 2026-10-06 16:40:02 UTC

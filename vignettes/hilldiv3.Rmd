@@ -1,0 +1,140 @@
+---
+title: "Getting started with hilldiv3"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Getting started with hilldiv3}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.width = 6,
+  fig.height = 4
+)
+```
+
+```{r setup}
+library(hilldiv3)
+```
+
+## What hilldiv3 does
+
+`hilldiv3` measures and compares the diversity of biological communities
+(OTU/ASV/MAG tables) using **Hill numbers**, a single family of metrics that
+unifies richness, Shannon and Simpson diversity through one parameter, the
+*diversity order* `q`.
+
+If Hill numbers are new to you, the key idea is the **effective number of
+taxa**: every value answers "how many equally-abundant taxa would give this
+much diversity?". A community of 10 taxa where one dominates and the rest are
+rare behaves, in practice, like far fewer than 10 — and the Hill number says
+exactly how many. Because all the metrics below share this one currency, you can
+compare them directly across samples, studies and diversity types.
+
+From the same framework `hilldiv3` derives diversity **partitioning**,
+**(dis)similarity**, **profiles**, **evenness** and **redundancy**, for three
+flavours of diversity:
+
+| Flavour | What it accounts for | How you ask for it |
+|---|---|---|
+| **Neutral** | abundances only | counts |
+| **Phylogenetic** | evolutionary relatedness | counts + `tree` |
+| **Functional** | trait dissimilarity | counts + `dist` |
+
+The diversity *type* is inferred from the inputs you pass — you call the same
+functions either way. You can also state it explicitly with
+`type = "neutral" | "phylogenetic" | "functional"` to have it validated against
+your inputs.
+
+## The data
+
+Every function takes a **count table** with taxa (OTUs/ASVs/MAGs) in rows and
+samples in columns. A matrix is the simplest form:
+
+```{r}
+counts <- matrix(
+  c(10, 0, 5,
+     2, 8, 1,
+     3, 4, 0,
+     6, 2, 7),
+  nrow = 3, byrow = FALSE,
+  dimnames = list(c("t1", "t2", "t3"),
+                  c("s1", "s2", "s3", "s4"))
+)
+counts
+```
+
+Data frames, tibbles, `phyloseq` objects and `TreeSummarizedExperiment`
+objects work too — see [Preparing your data](https://alberdilab.github.io/hilldiv3/articles/preparing-data.html).
+
+The package also ships a small **simulated** gut-microbiome example —
+`gut_counts` (a MAG count table), `gut_tree` (a phylogeny) and `gut_traits`
+(a trait table) — used throughout the website articles.
+
+## Alpha diversity (within a sample)
+
+`hilldiv()` returns Hill numbers per sample — the diversity *within* each
+community, traditionally called **alpha diversity**. By default it computes orders
+`q = 0` (richness), `q = 1` (Shannon diversity) and `q = 2` (Simpson
+diversity):
+
+```{r}
+hilldiv(counts)
+```
+
+Higher `q` down-weights rare taxa, so `qD` decreases as `q` grows unless the
+sample is perfectly even. Add a tree or a distance matrix to layer on more
+flavours: a `tree` adds phylogenetic diversity alongside neutral, and supplying
+both a `tree` and a `dist` returns all three types at once (a `type` column
+tells them apart). Restrict the output with `type =`.
+
+```{r}
+tree <- ape::read.tree(text = "((t1:1,t2:1):1,t3:2);")
+hilldiv(counts, tree = tree)                   # neutral + phylogenetic
+hilldiv(counts, tree = tree, type = "phylogenetic")   # phylogenetic only
+```
+
+## Partitioning and dissimilarity
+
+`hillpart()` splits diversity across samples into **alpha** (within-sample),
+**gamma** (pooled) and **beta** (`gamma / alpha`, the number of effectively
+distinct communities):
+
+```{r}
+hillpart(counts)
+```
+
+`hilldiss()` and `hillsim()` turn beta into bounded dissimilarity / similarity
+metrics (Sorensen-, Jaccard-, and UniFrac-type), and `hillpair()` returns a
+`dist` object of pairwise dissimilarities ready for ordination:
+
+```{r}
+hilldiss(counts, q = 1)
+```
+
+## Where to next
+
+The website carries in-depth articles:
+
+* [**Diversity types**](https://alberdilab.github.io/hilldiv3/articles/diversity-types.html) — neutral, phylogenetic and
+  functional measurement.
+* [**Partitioning and (dis)similarity**](https://alberdilab.github.io/hilldiv3/articles/partitioning-and-dissimilarity.html) —
+  alpha/beta/gamma, the S/C/U/V metrics, and pairwise dissimilarity for
+  ordination.
+* [**Profiles, evenness and redundancy**](https://alberdilab.github.io/hilldiv3/articles/profiles-evenness-redundancy.html) —
+  `hillprof()`, `hilleven()`, `hillred()`.
+* [**Preparing your data**](https://alberdilab.github.io/hilldiv3/articles/preparing-data.html) — input formats,
+  `phyloseq`/`TreeSummarizedExperiment`, `tss()`, `traits2dist()` and
+  `match_data()`.
+
+## References
+
+* Hill, M.O. (1973). Diversity and evenness. *Ecology*, 54, 427–432.
+* Jost, L. (2007). Partitioning diversity into independent alpha and beta
+  components. *Ecology*, 88, 2427–2439.
+* Alberdi, A. & Gilbert, M.T.P. (2019). A guide to the application of Hill
+  numbers to DNA-based diversity analyses. *Mol. Ecol. Resour.*, 19, 804–817.
+</content>
