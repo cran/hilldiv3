@@ -4,7 +4,8 @@
 [![R-CMD-check](https://github.com/alberdilab/hilldiv3/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/alberdilab/hilldiv3/actions/workflows/R-CMD-check.yaml)
 [![Codecov test coverage](https://codecov.io/gh/alberdilab/hilldiv3/graph/badge.svg)](https://app.codecov.io/gh/alberdilab/hilldiv3)
 [![lint](https://github.com/alberdilab/hilldiv3/actions/workflows/lint.yaml/badge.svg)](https://github.com/alberdilab/hilldiv3/actions/workflows/lint.yaml)
-[![CRAN status](https://www.r-pkg.org/badges/version/hilldiv3)](https://CRAN.R-project.org/package=hilldiv3)
+[![CRAN version](https://www.r-pkg.org/badges/version/hilldiv3)](https://CRAN.R-project.org/package=hilldiv3)
+[![CRAN checks](https://badges.cranchecks.info/summary/hilldiv3.svg)](https://cran.r-project.org/web/checks/check_results_hilldiv3.html)
 [![CRAN downloads](https://cranlogs.r-pkg.org/badges/grand-total/hilldiv3)](https://CRAN.R-project.org/package=hilldiv3)
 [![Lifecycle: stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://lifecycle.r-lib.org/articles/stages.html#stable)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
@@ -26,7 +27,22 @@ their traits are), covering measurement, partitioning, (dis)similarity,
 profiles, evenness and redundancy. You call the same functions for all three —
 the diversity type is chosen by whether you supply a tree or a distance matrix.
 
+`hilldiv3` is aimed at ecologists and microbiologists analysing DNA-based
+community data (metabarcoding, amplicon and shotgun metagenomics), and more
+generally anyone who needs comparable alpha, beta and gamma diversity across
+taxonomic, phylogenetic and functional dimensions — including nested
+multi-scale designs such as individuals within sites within regions.
+
 ## Installation
+
+Install the released version from CRAN:
+
+```r
+install.packages("hilldiv3")
+```
+
+To install the version in this repository, which may contain changes not yet
+available on CRAN:
 
 ```r
 # install.packages("devtools")
@@ -46,7 +62,13 @@ dist <- traits2dist(gut_traits)
 hilldiv(gut_counts, dist = dist)                   # neutral + functional
 hilldiv(gut_counts, tree = gut_tree, dist = dist)  # all three types at once
 
-# Results are tidy by default and plot directly.
+# Attribute Hill power-sum weight to a MAG and a set of MAGs.
+sets <- list(C = rownames(gut_counts)[3],
+             ABC = rownames(gut_counts)[1:3])
+hillshare(gut_counts, q = c(0, 1, 2), tree = gut_tree, sets = sets)
+hillshare(gut_counts, q = c(0, 1, 2), dist = dist, sets = sets)
+
+# Core diversity results are tidy by default and plot directly.
 plot(hillprof(gut_counts))             # diversity profile
 hilldiv(gut_counts, out = "matrix")    # matrix: samples x q orders
 ```
@@ -58,8 +80,9 @@ Full documentation lives on the package website:
 
 * **Get started** — `vignette("hilldiv3")`, a gentle introduction for anyone
   using Hill numbers for the first time.
-* **Articles** — step-by-step guides to diversity types, partitioning &
-  (dis)similarity, profiles/evenness/redundancy, and preparing your data.
+* **Articles** — step-by-step guides to diversity types, taxon and set shares,
+  partitioning & (dis)similarity, profiles/evenness/redundancy, and preparing
+  your data.
 * **Examples** — complete worked analyses (bat diets, gut microbiomes).
 * **Reference** — every exported function, grouped by task.
 
@@ -80,17 +103,55 @@ full redesign that keeps the familiar function names (`hilldiv()`,
 * Faster phylogenetic computation using an `ape` post-order traversal in place
   of `geiger::tips()`; `hillpair()` computes the shared structure once and
   reuses it across all sample pairs.
-* **Tidy by default**: every `hill*` function returns a long-format
-  `data.frame` with `print()`/`plot()`/`autoplot()` methods; pass
-  `out = "matrix"` for a plain matrix.
+* **Tidy by default**: the core diversity and comparison functions return a
+  long-format `data.frame` with `print()`/`plot()`/`autoplot()` methods; pass
+  `out = "matrix"` for a plain matrix. `hillshare()` returns a data frame of
+  taxon and set shares.
 * An explicit `type = c("auto", "neutral", "phylogenetic", "functional")`
   argument that asserts and validates the diversity type (auto-detected by
   default).
-* New functions `hillprof()` (diversity profiles) and `hilleven()` (evenness),
-  hierarchical multi-scale partitioning in `hillpart()`, plus bundled example
-  data (`gut_counts`, `gut_tree`, `gut_traits`).
+* New functions `hillprof()` (diversity profiles), `hilleven()` (evenness)
+  and `hillshare()` (taxon and set shares), hierarchical multi-scale
+  partitioning in `hillpart()`, plus bundled example data (`gut_counts`,
+  `gut_tree`, `gut_traits`).
 
 See [`NEWS.md`](NEWS.md) for the full changelog.
+
+## Testing
+
+The diversity engine is covered by a `testthat` suite, including golden-value
+tests against independent references (`vegan`, hand-computed values and
+analytical identities such as Faith's PD and exact telescoping of nested
+partitions). Run it with:
+
+```r
+devtools::test()
+```
+
+`R CMD check` runs on Linux, macOS and Windows on every push via GitHub
+Actions.
+
+## Getting help and contributing
+
+* Questions and bug reports: open an
+  [issue](https://github.com/alberdilab/hilldiv3/issues).
+* Contributions are welcome — see [`CONTRIBUTING.md`](https://github.com/alberdilab/hilldiv3/blob/main/CONTRIBUTING.md) for how
+  to report problems, propose features and submit pull requests, and for the
+  support we aim to provide.
+
+Please note that the hilldiv3 project is released with a
+[Contributor Code of Conduct](https://github.com/alberdilab/hilldiv3/blob/main/CODE_OF_CONDUCT.md). By contributing to this
+project, you agree to abide by its terms.
+
+## Citation
+
+If you use `hilldiv3`, please cite it using the metadata in
+[`CITATION.cff`](https://github.com/alberdilab/hilldiv3/blob/main/CITATION.cff) (GitHub's "Cite this repository" button), and
+the methodological guide:
+
+* Alberdi, A. & Gilbert, M.T.P. (2019). A guide to the application of Hill
+  numbers to DNA-based diversity analyses. *Mol. Ecol. Resour.*, 19, 804-817.
+  <https://doi.org/10.1111/1755-0998.13014>
 
 ## References
 

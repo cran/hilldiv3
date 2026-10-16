@@ -1,5 +1,23 @@
-# hilldiv3 (development version)
+# hilldiv3 3.1.1
 
+* Documentation only: links in the README to `CONTRIBUTING.md`,
+  `CODE_OF_CONDUCT.md` and `CITATION.cff` now use absolute URLs, fixing the
+  invalid file URI note raised by the CRAN incoming checks.
+
+# hilldiv3 3.1.0
+
+* Added `hillshare()` to allocate neutral, phylogenetic and functional Hill
+  power-sum weight to individual taxa or named sets. Its first allocation
+  method is `"qpower"`; empty samples have undefined (`NA`) shares.
+* Functional Hill numbers now handle all-zero distance matrices and empty
+  samples consistently: identical taxa have diversity 1, and empty samples
+  have diversity 0.
+
+# hilldiv3 3.0.1
+
+* Added contributing guidelines (`CONTRIBUTING.md`), a code of conduct, issue
+  templates, citation metadata (`CITATION.cff`) and the full GPL-3 licence
+  text, and a Journal of Open Source Software paper (`paper/`).
 * **Breaking:** the `out = "matrix"` form of the per-sample functions
   (`hilldiv()`, `hillprof()`, `hilleven()`) now returns samples in rows and
   diversity orders (`q0`, `q1`, ...) in columns, instead of the previous
@@ -14,7 +32,9 @@
   non-numeric column raises a clear error asking the user to fix the input.
 * Verbose output now reports the number of taxa and samples being analysed.
 
-## hilldiv3 3.0.0
+# hilldiv3 3.0.0
+
+First published on CRAN on 6 October 2026.
 
 Complete redesign of the package built on a tested, isolated compute engine.
 

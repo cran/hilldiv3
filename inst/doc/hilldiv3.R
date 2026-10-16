@@ -30,6 +30,12 @@ hilldiv(counts, tree = tree)                   # neutral + phylogenetic
 hilldiv(counts, tree = tree, type = "phylogenetic")   # phylogenetic only
 
 ## -----------------------------------------------------------------------------
+sets <- list(t1 = "t1", t1_and_t2 = c("t1", "t2"))
+fdist <- as.matrix(stats::dist(c(t1 = 0, t2 = 0.5, t3 = 1)))
+hillshare(counts[, "s2"], q = c(0, 1, 2),
+          tree = tree, dist = fdist, sets = sets)
+
+## -----------------------------------------------------------------------------
 hillpart(counts)
 
 ## -----------------------------------------------------------------------------
