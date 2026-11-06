@@ -1,3 +1,41 @@
+# hilldiv3 3.2.1
+
+* Tests no longer open a PDF device on `/dev/null`, which does not exist on
+  Windows; they use a temporary file instead. No user-facing changes.
+
+# hilldiv3 3.2.0
+
+* Multi-scale partitioning with `hierarchy` now weights units linearly
+  (Routledge/Tsallis-type), so every nested beta is at least one for `q >= 0`
+  and `alpha * prod(beta) = gamma` holds exactly in unbalanced designs. Earlier
+  `p_u^q` weights could give beta below one when units were unequal. Balanced
+  equal-weight results are unchanged, but for unbalanced designs the nested
+  alpha, betas and gamma at `q != 1` now differ from earlier development
+  versions by a few per cent (and slightly at `q = 1` for functional
+  diversity).
+* `hillpart()` gains `weights` (`"equal"`, `"abundance"` or a numeric vector)
+  for hierarchical designs, a reference `depth` for phylogenetic hierarchies
+  (ultrametric trees) and a grid of `tau` values for functional hierarchies
+  (one hierarchy per `tau`).
+* `hilldiss()` and `hillsim()` return overlap metrics (S, C, U, V) per
+  hierarchical transition, using a data-dependent effective number of units
+  that keeps them in [0, 1]. `hillpair(hierarchy =, level =)` compares units of
+  a chosen level after weighted pooling of their samples.
+* Added `hillcontrib()` to rank taxa or named sets by their additive
+  contributions to pairwise or collective Hill dissimilarity. It supports
+  neutral, phylogenetic and functional diversity and all four dissimilarity
+  metrics. Collective comparisons can be run for named groups of samples.
+* Functional partitioning now handles an all-zero distance matrix through the
+  shared functional-similarity kernel.
+* Expanded the gut microbiome vignette with MAG power-sum shares and an
+  illustrated example of MAG contributions to dissimilarity.
+* Corrected the partitioning and dissimilarity vignette and the documentation
+  of `hilldiss()`, `hillsim()`, `hillpair()` and `hillcontrib()`: S and V are
+  now described as turnover measures and U and C as overlap complements, C is
+  one minus Morisita-Horn at `q = 2`, `hillsim()` documents its metrics as
+  similarities, and the output descriptions and example names match what the
+  functions return.
+
 # hilldiv3 3.1.1
 
 * Documentation only: links in the README to `CONTRIBUTING.md`,
